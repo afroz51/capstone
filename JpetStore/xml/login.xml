@@ -1,0 +1,7 @@
+<suite name="Automation Suite" parallel="tests" thread-count="2">
+    <test name="Cucumber Tests">
+        <classes>
+            <class name="runner.LoginRunner"/>
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,17 @@
+<suite name="PetStoreSuite" parallel="tests" thread-count="2">
+    <test name="Edge_Test">
+        <parameter name="browser" value="edge"/>
+        <parameter name="url" value="https://petstore.octoperf.com/actions/Catalog.action"/>
+        <classes>
+            <class name="tests.PetTest"/>
+        </classes>
+    </test>
+
+     <test name="Firefox_Test">
+        <parameter name="browser" value="firefox"/>
+        <parameter name="url" value="https://petstore.octoperf.com/actions/Catalog.action"/>
+        <classes>
+            <class name="tests.PetTest"/>
+        </classes>
+    </test>  
+</suite>
