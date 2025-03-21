@@ -2,7 +2,6 @@ package excel;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -21,15 +20,19 @@ public class ExcelUtility
             workbook = new XSSFWorkbook(fis); 
         } 
         catch (IOException e) {
-            e.printStackTrace(); 
+            throw new RuntimeException("Error loading Excel file: " + e.getMessage());
         }
     }
 
     // Sets the active sheet by name
     public static void setSheet(String sheetName) 
     {
+        if (workbook == null) {  // Ensure workbook is loaded before setting the sheet
+            throw new IllegalStateException("Workbook is not initialized. Call loadExcelData() first.");
+        }
+
         sheet = workbook.getSheet(sheetName); 
-        if (sheet == null) { // If the sheet does not exist, throw an error
+        if (sheet == null) { 
             throw new IllegalArgumentException("Sheet " + sheetName + " does not exist in the workbook");
         }
     }
@@ -37,16 +40,26 @@ public class ExcelUtility
     // Retrieves cell data as a String from the specified row and column
     public static String getCellData(int rowNum, int colNum)
     {
-        if (sheet == null)  // Ensures a sheet is selected before fetching data
+        if (sheet == null)  
         {
             throw new IllegalStateException("Sheet has not been set. Call setSheet() first.");
         }
-        DataFormatter formatter = new DataFormatter(); // Formats cell values to String
+        DataFormatter formatter = new DataFormatter();
         try {
-            return formatter.formatCellValue(sheet.getRow(rowNum).getCell(colNum)); // Retrieves and formats cell data
+            return formatter.formatCellValue(sheet.getRow(rowNum).getCell(colNum)); 
         }
-        catch (NullPointerException e) { // Handles cases where the cell is empty or missing
+        catch (NullPointerException e) { 
             return "Cell not found";
         }
+    }
+    
+    // Getter for workbook 
+    public static Workbook getWorkbook() {
+        return workbook;
+    }
+
+    // Getter for sheet 
+    public static Sheet getSheet() {
+        return sheet;
     }
 }
