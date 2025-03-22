@@ -184,7 +184,7 @@ public class BaseClass extends ExcelUtility
     
     @BeforeSuite
     public void clearAllureResults() {
-    	String[] allurePaths = {"allure-results", "allure-results"};
+    	String[] allurePaths = {"allure-results", "/target/allure-results/"};
 
         for (String path : allurePaths) {
             File allureResults = new File(path);
@@ -192,7 +192,6 @@ public class BaseClass extends ExcelUtility
                 for (File file : allureResults.listFiles()) {
                     file.delete();
                 }
-                System.out.println("Deleted Allure results from: " + path);
             }
         }
     }
@@ -205,13 +204,12 @@ public class BaseClass extends ExcelUtility
         
         try 
         {
-            System.out.println("🔵 Generating Allure Report in the background...");
             ProcessBuilder reportBuilder = new ProcessBuilder("cmd.exe", "/c", "mvn allure:report");
             reportBuilder.redirectErrorStream(true);
             Process reportProcess = reportBuilder.start();
             reportProcess.waitFor(); // Wait until report is generated
 
-            String reportPath = System.getProperty("user.dir") + "/allure-results/";
+            String reportPath = System.getProperty("user.dir") + "/target/allure-results/";
             File reportDir = new File(reportPath);
 
             if (reportDir.exists() && reportDir.isDirectory()) 

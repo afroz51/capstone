@@ -73,6 +73,7 @@ public class RegistrationSteps extends BaseClass
     @When("User enters invalid excel registration details")
     public void userEntersInvalidDetails() throws IOException, InterruptedException 
     {
+    	loadExcelData();
         test.info("Entering invalid registration details using Excel data");
 
         regPage.fillRegistrationForm(  // Fetch user registration details from Excel sheet
@@ -92,6 +93,7 @@ public class RegistrationSteps extends BaseClass
     @When("User enters valid properties registration details")
     public void userEntersValidDetails() throws IOException, InterruptedException 
     {
+    	loadProperties();
         test.info("Entering valid registration details using Properties file");
 
         regPage.fillRegistrationForm(  // Fetch registration details from properties file

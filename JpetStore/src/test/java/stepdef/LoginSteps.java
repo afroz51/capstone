@@ -60,7 +60,8 @@ public class LoginSteps extends BaseClass
     @When("User enters invalid excel login details")
     public void userEntersInvalidExcelDetails() throws IOException, InterruptedException 
     {
-        test.info("Entering invalid login details using Excel data");
+    	loadExcelData();
+    	test.info("Entering invalid login details using Excel data");
 
         loginPage.login(getCellData(1, 0), getCellData(1, 1));  // Fetch username and password from Excel sheet
         loginPage.submit();
@@ -71,6 +72,7 @@ public class LoginSteps extends BaseClass
     @When("User enters valid properties login details")
     public void userEntersValidPropertiesDetails() throws IOException, InterruptedException
     {
+    	loadProperties();
         test.info("Entering valid login details using Properties file");
 
         loginPage.login(prop.getProperty("userid"), prop.getProperty("newpassword"));  // Fetch credentials from properties file

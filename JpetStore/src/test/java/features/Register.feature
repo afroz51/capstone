@@ -13,7 +13,7 @@ Feature: User Registration
         Given User navigates to the registration page
         When User enters valid data table data registration details
         | username | password    | repeatedPassword | firstName | lastName | email             | phone    | address1  | address2 | city      | state | zip   | country | language | favoriteCategory | enableMyList | enableMyBanner |
-        | afroz23   | Afroz@8143   | Afroz@8143        | Afroz      | Shaik      | Afroz@example.com | 9876543120  | Main St | Apt 4B  | Banglore  | Karnataka    | 12345 | india     | english  | Dogs            | true         | true           |
+        | afroz233   | Afroz@8143   | Afroz@8143        | Afroz      | Shaik      | Afroz@example.com | 9876543120  | Main St | Apt 4B  | Banglore  | Karnataka    | 12345 | india     | english  | Dogs            | true         | true           |
         Then User should be registered successfully
 
     @invalid2

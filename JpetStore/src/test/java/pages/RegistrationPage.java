@@ -128,7 +128,7 @@ public class RegistrationPage extends BaseClass
     // Method to Verify Registration Success
     public boolean isRegistrationSuccessful() 
     {
-        boolean status = driver.getCurrentUrl().equals("https://petstore.octoperf.com/actions/Catalog.action");
+    	boolean status = driver.findElement(signin).isDisplayed();
         if (status) 
         {
             test.pass("Registration successful, redirected to homepage");
