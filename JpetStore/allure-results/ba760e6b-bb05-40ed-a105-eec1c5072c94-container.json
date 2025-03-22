@@ -1,1 +1,0 @@
-{"uuid":"ba760e6b-bb05-40ed-a105-eec1c5072c94","name":"tests.PetTest.setUp","children":["0e92fe1e-e245-42da-98fe-f0e3957fd22d"],"description":"","befores":[{"name":"setUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1742638601855,"stop":1742638614438}],"afters":[],"start":1742638601855,"stop":1742638614452}

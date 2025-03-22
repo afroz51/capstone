@@ -17,14 +17,13 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 
 import excel.ExcelUtility;
-import io.qameta.allure.Allure;
-import io.qameta.allure.Attachment;
 
 public class BaseClass extends ExcelUtility
 {
@@ -34,86 +33,92 @@ public class BaseClass extends ExcelUtility
     public static ExtentTest test;
     private static String extentReportPath;
 
-    // Initialize Extent Reports
+    // Initialize Extent Reports only if not already initialized
     public static void initExtentReport()
-    {
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        extentReportPath = System.getProperty("user.dir") + "/target/ExtentReports/ExtentReport_" + timestamp + ".html";
-
-        ExtentSparkReporter spark = new ExtentSparkReporter(extentReportPath);
-        extent = new ExtentReports();
-        extent.attachReporter(spark);
-
-        extent.setSystemInfo("OS", System.getProperty("os.name"));
-        extent.setSystemInfo("Browser", "Chrome"); // Default value, update dynamically
-    }
-
-    // Initialize WebDriver
-    public static void invokeBrowser()
-    {
-        if (extent == null) {
-            initExtentReport();  // Ensure Extent Report is initialized
-        }
-
-        loadProperties();
-        loadExcelData();
-        String browser = prop.getProperty("browser");
-
-        switch (browser.toLowerCase()) 
-        {
-            case "chrome":
-                driver = new ChromeDriver();
-                break;
-            case "firefox":
-                driver = new FirefoxDriver();
-                break;
-            case "edge":
-                driver = new EdgeDriver();
-                break;
-            default:
-                throw new RuntimeException("Invalid browser name in data.properties");
-        }
-
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get(prop.getProperty("url"));
-    }
-    
-    public static void invokeBrowser(String browser, String url)
     {
         if (extent == null) 
         {
-            initExtentReport(); // Ensure Extent Report is initialized
-        }
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            extentReportPath = System.getProperty("user.dir") + "/target/ExtentReports/ExtentReport_" + timestamp + ".html";
 
-        loadProperties();
-        loadExcelData();
-        
-        switch (browser.toLowerCase()) 
+            ExtentSparkReporter spark = new ExtentSparkReporter(extentReportPath);
+            extent = new ExtentReports();
+            extent.attachReporter(spark);
+
+            extent.setSystemInfo("OS", System.getProperty("os.name"));
+            extent.setSystemInfo("Browser", "Chrome"); // Default value, updated dynamically
+        }
+    }
+
+    // Initialize WebDriver and Properties
+    public static void invokeBrowser()
+    {
+        initExtentReport();  // Ensure Extent Report is initialized only once
+
+        if (prop == null) 
         {
-            case "chrome":
-                driver = new ChromeDriver();
-                break;
-            case "firefox":
-                driver = new FirefoxDriver();
-                break;
-            case "edge":
-                driver = new EdgeDriver();
-                break;
-            default:
-                throw new RuntimeException("Invalid browser name: " + browser);
+            loadProperties();
         }
+        
+        if (driver == null) 
+        {
+            String browser = prop.getProperty("browser");
 
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get(url);
+            switch (browser.toLowerCase()) 
+            {
+                case "chrome":
+                    driver = new ChromeDriver();
+                    break;
+                case "firefox":
+                    driver = new FirefoxDriver();
+                    break;
+                case "edge":
+                    driver = new EdgeDriver();
+                    break;
+                default:
+                    throw new RuntimeException("Invalid browser name in data.properties");
+            }
+
+            driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            driver.get(prop.getProperty("url"));
+        }
+    }
+    
+    // Overloaded method for specific browser and URL
+    public static void invokeBrowser(String browser, String url)
+    {
+        initExtentReport();
+
+        if (driver == null) 
+        {
+            switch (browser.toLowerCase()) 
+            {
+                case "chrome":
+                    driver = new ChromeDriver();
+                    break;
+                case "firefox":
+                    driver = new FirefoxDriver();
+                    break;
+                case "edge":
+                    driver = new EdgeDriver();
+                    break;
+                default:
+                    throw new RuntimeException("Invalid browser name: " + browser);
+            }
+
+            driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            driver.get(url);
+        }
     }
 
     // Load data from properties file
     public static void loadProperties()
     {
         prop = new Properties();
-        try (FileInputStream ip = new FileInputStream("src/test/java/data/data.properties")) {
+        try (FileInputStream ip = new FileInputStream("src/test/java/data/data.properties")) 
+        {
             prop.load(ip);
         } 
         catch (IOException e) 
@@ -122,17 +127,27 @@ public class BaseClass extends ExcelUtility
         }
     }
 
-    // Load data from Excel file
+    // Load data from Excel file (if not already loaded)
     public static void loadExcelData()
     {
-        try {
-            ExcelUtility.loadExcelData("C:\\Users\\AFROZ\\Downloads\\data.xlsx");
-            setSheet("userdata");
+        try 
+        {
+            if (!isExcelDataLoaded()) 
+            {
+                ExcelUtility.loadExcelData("C:\\Users\\AFROZ\\Downloads\\data.xlsx");
+                setSheet("userdata");
+            }
         } 
         catch (Exception e) 
         {
             e.printStackTrace();
         }
+    }
+
+    // Check if Excel data is already loaded
+    private static boolean isExcelDataLoaded() 
+    {
+        return ExcelUtility.getWorkbook() != null;
     }
 
     // Capture Screenshot and return file path
@@ -145,27 +160,7 @@ public class BaseClass extends ExcelUtility
         String screenshotPath = System.getProperty("user.dir") + "/screenshots/" + "page_" + System.currentTimeMillis() + ".png";
         FileUtils.copyFile(src, new File(screenshotPath));
         
-        attachScreenshotAllure(); // Attach to Allure Report
         return screenshotPath; // Return full path of screenshot
-    }
-
-    // Attach Screenshot to Allure Report
-    @Attachment(value = "Screenshot", type = "image/png")
-    public static byte[] attachScreenshotAllure() 
-    {
-        try {
-            return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-        } 
-        catch (Exception e) 
-        {
-            return null;
-        }
-    }
-
-    // Log message to Allure Report
-    public static void logToAllure(String message)
-    {
-        Allure.step(message);
     }
 
     // Close Browser & Flush Reports
@@ -174,19 +169,35 @@ public class BaseClass extends ExcelUtility
         if (driver != null) 
         {
             driver.quit();
+            driver = null; // Prevent re-use of a closed driver
         }
     }
     
-    // Flush Extent Report
+    // Flush Extent Report only if initialized
     public static void flushExtentReport() 
     {
         if (extent != null) 
         {
-            extent.flush(); // Save and close the Extent Report
+            extent.flush();
+        }
+    }
+    
+    @BeforeSuite
+    public void clearAllureResults() {
+    	String[] allurePaths = {"allure-results", "allure-results"};
+
+        for (String path : allurePaths) {
+            File allureResults = new File(path);
+            if (allureResults.exists() && allureResults.isDirectory()) {
+                for (File file : allureResults.listFiles()) {
+                    file.delete();
+                }
+                System.out.println("Deleted Allure results from: " + path);
+            }
         }
     }
 
-    // Generate Allure Report after test execution
+    // Generate Allure Report after test execution (Runs in Background)
     @AfterSuite
     public void generateAllureReport() 
     {
@@ -194,21 +205,24 @@ public class BaseClass extends ExcelUtility
         
         try 
         {
-            // Move Allure results to target/site/allure-maven-plugin/
-            File allureResults = new File(System.getProperty("user.dir") + "/allure-results");
-            File allureReportDir = new File(System.getProperty("user.dir") + "/target/site/allure-maven-plugin");
-            
-            if (!allureReportDir.exists()) {
-                allureReportDir.mkdirs();
+            System.out.println("🔵 Generating Allure Report in the background...");
+            ProcessBuilder reportBuilder = new ProcessBuilder("cmd.exe", "/c", "mvn allure:report");
+            reportBuilder.redirectErrorStream(true);
+            Process reportProcess = reportBuilder.start();
+            reportProcess.waitFor(); // Wait until report is generated
+
+            String reportPath = System.getProperty("user.dir") + "/allure-results/";
+            File reportDir = new File(reportPath);
+
+            if (reportDir.exists() && reportDir.isDirectory()) 
+            {
+                System.out.println("Allure Report generated successfully in: " + reportPath);
+            } 
+            else 
+            {
+                System.out.println("Allure Report generation failed. Check Maven logs.");
             }
 
-            FileUtils.copyDirectory(allureResults, allureReportDir);
-
-            // Generate Allure Report (ensure proper command execution)
-            ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "allure serve target/site/allure-maven-plugin");
-            pb.inheritIO();
-            Process process = pb.start();
-            process.waitFor(); // Wait for the process to complete before exiting
         } 
         catch (IOException | InterruptedException e) 
         {

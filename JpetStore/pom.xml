@@ -140,6 +140,18 @@
         </execution>
     </executions>
 </plugin>
+		<plugin>
+            <artifactId>maven-clean-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+                <execution>
+                    <phase>pre-integration-test</phase>
+                    <goals>
+                        <goal>clean</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
         
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -152,7 +164,7 @@
           <version>3.5.2</version>
           <configuration>
               <suiteXmlFiles>
-				   <suiteXmlFile>./xml/master.xml</suiteXmlFile>
+				   <suiteXmlFile>./xml/pet.xml</suiteXmlFile>
 			  </suiteXmlFiles>
           </configuration>
         </plugin>

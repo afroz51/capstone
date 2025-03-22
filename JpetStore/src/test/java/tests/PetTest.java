@@ -34,7 +34,8 @@ public class PetTest extends BaseClass {
         }
 
         String petName = prop.getProperty("searchProduct");
-        if (petName == null || petName.isEmpty()) {
+        if (petName == null || petName.isEmpty()) 
+        {
             throw new RuntimeException("Property 'searchProduct' is missing in data.properties.");
         }
 
