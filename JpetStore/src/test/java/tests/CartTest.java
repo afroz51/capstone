@@ -1,7 +1,6 @@
 package tests;
 
 import java.io.IOException;
-
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -9,11 +8,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-
 import base.BaseClass;
 import pages.CartPage;
 
-public class CartTest extends BaseClass
+public class CartTest extends BaseClass 
 {
     CartPage cartPage;
 
@@ -27,118 +25,107 @@ public class CartTest extends BaseClass
 
     // Data Provider: Fetch from Properties File
     @DataProvider(name = "cartDataFromProperties")
-    public Object[][] getCartDataFromProperties() 
+    public Object[][] getCartDataFromProperties()
     {
         if (prop == null) 
         {
             loadProperties(); // Ensure properties file is loaded
         }
 
-        // Fetch product names from properties file
-        String product1 = prop.getProperty("product1");
-        String product2 = prop.getProperty("product2");
-        String product3 = prop.getProperty("product3");
-        String product4 = prop.getProperty("product4");
+        // Fetch product names as a single comma-separated string from properties
+        String items = prop.getProperty("searchItems");
 
-        if (product1 == null || product2 == null || product3 == null || product4 == null) 
+        if (items == null || items.trim().isEmpty()) 
         {
-            throw new RuntimeException("One or more product names are missing in data.properties.");
+            throw new RuntimeException("Product names are missing in data.properties.");
         }
 
-        return new Object[][]{{product1, product2, product3, product4}};
+        String[] searchItems = items.split(",");
+
+        return new Object[][]{{searchItems}};
     }
 
     // Data Provider: Fetch from Excel File 
     @DataProvider(name = "cartDataFromExcel")
-    public Object[][] getCartDataFromExcel() 
+    public Object[][] getCartDataFromExcel()
     {
-        // Ensure Excel data is loaded
-        if (getWorkbook() == null) {
+        if (getWorkbook() == null) 
+        {
             loadExcelData("C:\\Users\\AFROZ\\Downloads\\data.xlsx");
         }
 
-        // Ensure the sheet is set
-        if (getSheet() == null) {
+        if (getSheet() == null)
+        {
             setSheet("userdata");
         }
 
-        // Fetch product names from Excel 
-        String product1 = getCellData(1, 17);
-        String product2 = getCellData(1, 18);
-        String product3 = getCellData(1, 19);
-        String product4 = getCellData(1, 20);
+        String items = getCellData(1, 17);  
 
-        // Validate data
-        if (product1 == null || product2 == null || product3 == null || product4 == null) 
+        System.out.println("Raw Excel Data: [" + items + "]");
+
+        if (items == null || items.trim().isEmpty())
         {
-            throw new RuntimeException("One or more product names are missing in Excel.");
+            throw new RuntimeException("Product names are missing in Excel.");
         }
 
-        return new Object[][]{{product1, product2, product3, product4}};
+        // Ensure proper splitting
+        String[] searchItems = items.split("\\s*,\\s*");  // Splitting by commas with spaces
+
+        // Debug: Print out split values
+        System.out.println("Parsed Product List:");
+        for (String product : searchItems)
+        {
+            System.out.println("- " + product);
+        }
+
+        return new Object[][] { { searchItems } };  // Return as an array
     }
 
     // Test 1: Fetch data from Properties File
     @Test(dataProvider = "cartDataFromProperties", enabled = false)
-    public void testAddMultipleProductsToCart_PropertiesFile(String product1, String product2, String product3, String product4) throws IOException 
+    public void testAddMultipleProductsToCart_PropertiesFile(String[] searchItems) throws IOException 
     {
-        executeAddToCartTest(product1, product2, product3, product4, "Properties File");
+        executeAddToCartTest(searchItems, "Properties File");
     }
 
     // Test 2: Fetch data from Excel File
     @Test(dataProvider = "cartDataFromExcel", enabled = true)
-    public void testAddMultipleProductsToCart_ExcelFile(String product1, String product2, String product3, String product4) throws IOException 
+    public void testAddMultipleProductsToCart_ExcelFile(String[] searchItems) throws IOException 
     {
-        executeAddToCartTest(product1, product2, product3, product4, "Excel File");
+        executeAddToCartTest(searchItems, "Excel File");
     }
 
     // Reusable Test Execution Method
-    private void executeAddToCartTest(String product1, String product2, String product3, String product4, String dataSource) throws IOException
+    private void executeAddToCartTest(String[] searchItems, String dataSource) throws IOException 
     {
         try {
-            test = extent.createTest("Adding Multiple Products to Cart (" + dataSource + "): " + product1 + ", " + product2 + ", " + product3 + ", " + product4);
+            test = extent.createTest("Adding Multiple Products to Cart (" + dataSource + ")");
 
-            // Search and Add Product 1 to Cart
-            cartPage.searchProduct(product1);
-            cartPage.selectProduct();
-            cartPage.addProductToCart();
-            Assert.assertTrue(cartPage.isProductAddedToCart("1"), "Product 1 was not added to the cart!");
+            for (int i = 0; i < searchItems.length; i++) {
+                cartPage.searchProduct(searchItems, i); // Updated method call
+                cartPage.selectProduct();
+                cartPage.addProductToCart();
+                Assert.assertTrue(cartPage.isProductAddedToCart(String.valueOf(i + 1)), 
+                                  "Product " + (i + 1) + " was not added to the cart!");
 
-            // Search and Add Product 2 to Cart
-            cartPage.clearSearchBox();
-            cartPage.searchProduct(product2);
-            cartPage.selectProduct();
-            cartPage.addProductToCart();
-            Assert.assertTrue(cartPage.isProductAddedToCart("2"), "Product 2 was not added to the cart!");
+                // Clear search box before next search
+                if (i < searchItems.length - 1) {
+                    cartPage.clearSearchBox();
+                }
+            }
 
-            // Search and Add Product 3 to Cart
-            cartPage.clearSearchBox();
-            cartPage.searchProduct(product3);
-            cartPage.selectProduct();
-            cartPage.addProductToCart();
-            Assert.assertTrue(cartPage.isProductAddedToCart("3"), "Product 3 was not added to the cart!");
-
-            // Search and Add Product 4 to Cart
-            cartPage.clearSearchBox();
-            cartPage.searchProduct(product4);
-            cartPage.selectProduct();
-            cartPage.addProductToCart();
-            Assert.assertTrue(cartPage.isProductAddedToCart("4"), "Product 4 was not added to the cart!");
-            
-            // Take ScreenShot
+            // Take Screenshot
             screenshot();
-
-            // Verify Cart Summary (this could be a new method for cart validation)
-            // Assuming a method to verify cart contents or total price, you can implement as needed
             test.pass("All products added to the cart successfully.");
         } 
-        catch (NoSuchElementException e) 
+        catch (NoSuchElementException e)
         {
             handleTestFailure(e);
         }
     }
 
     // Reusable Failure Handling Method
-    private void handleTestFailure(NoSuchElementException e)
+    private void handleTestFailure(NoSuchElementException e) 
     {
         test.fail("Test failed due to missing element: " + e.getMessage());
         try {
@@ -153,7 +140,7 @@ public class CartTest extends BaseClass
     }
 
     @AfterMethod
-    public void close() 
+    public void close()
     {
         closeBrowser();
         flushExtentReport();

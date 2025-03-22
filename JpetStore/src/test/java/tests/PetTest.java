@@ -11,6 +11,9 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import base.BaseClass;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import pages.PetPage;
 
 public class PetTest extends BaseClass {
@@ -52,7 +55,7 @@ public class PetTest extends BaseClass {
         }
 
         // Fetch data from Excel
-        int row = 1, col = 17; // Excel data location
+        int row = 1, col = 16; // Excel data location
         String petName = getCellData(row, col);
 
         // Validate data
@@ -63,23 +66,26 @@ public class PetTest extends BaseClass {
         return new Object[][]{{petName}};
     }
 
-
     // **Test 1: Fetch data from Properties File**
     @Test(dataProvider = "petDataFromProperties", enabled = false)
+    @Description("Test search and add to cart using data from properties file")
     public void testSearchAndAddToCart_PropertiesFile(String petName) throws IOException {
         executeSearchAndAddToCartTest(petName, "Properties File");
     }
 
     // **Test 2: Fetch data from Excel File**
     @Test(dataProvider = "petDataFromExcel", enabled = true)
+    @Description("Test search and add to cart using data from Excel file")
     public void testSearchAndAddToCart_ExcelFile(String petName) throws IOException {
         executeSearchAndAddToCartTest(petName, "Excel File");
     }
 
-    // **Reusable Test Execution Method**
+    // **Reusable Test Execution Method with Allure Steps**
+    @Step("Executing search and add to cart test for {petName} from {dataSource}")
     private void executeSearchAndAddToCartTest(String petName, String dataSource) throws IOException {
         try {
             test = extent.createTest("Searching and Adding Pet (" + dataSource + "): " + petName);
+            Allure.step("Test Execution Started: Searching and Adding Pet (" + dataSource + "): " + petName);
 
             petPage.searchPet(petName);
             petPage.selectPet();
@@ -87,20 +93,27 @@ public class PetTest extends BaseClass {
 
             Assert.assertTrue(petPage.isPetAddedToCart(), "Pet was not added to the cart!");
             test.pass("Pet added to cart successfully.");
+            Allure.step("Pet added to cart successfully.");
         } catch (NoSuchElementException e) {
             handleTestFailure(e);
         }
     }
 
-    // **Reusable Failure Handling Method**
+    // **Reusable Failure Handling Method with Allure Reporting**
+    @Step("Handling Test Failure")
     private void handleTestFailure(NoSuchElementException e) {
         test.fail("Test failed due to missing element: " + e.getMessage());
+        Allure.step("Test failed due to missing element: " + e.getMessage());
+
         try {
             String screenshotPath = screenshot();
             test.addScreenCaptureFromPath(screenshotPath);
+            Allure.addAttachment("Screenshot on Failure", "image/png", screenshotPath);
         } catch (IOException ioException) {
             test.fail("Failed to capture screenshot: " + ioException.getMessage());
+            Allure.step("Failed to capture screenshot: " + ioException.getMessage());
         }
+
         Assert.fail("Test failed due to missing element.");
     }
 
@@ -108,5 +121,6 @@ public class PetTest extends BaseClass {
     public void close() {
         closeBrowser();
         flushExtentReport();
+        Allure.step("Browser closed and Extent Report flushed.");
     }
 }

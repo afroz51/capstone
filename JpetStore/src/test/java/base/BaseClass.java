@@ -16,12 +16,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterSuite;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 
 import excel.ExcelUtility;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Attachment;
 
 public class BaseClass extends ExcelUtility
 {
@@ -29,14 +32,15 @@ public class BaseClass extends ExcelUtility
     public static Properties prop;
     public static ExtentReports extent;
     public static ExtentTest test;
+    private static String extentReportPath;
 
     // Initialize Extent Reports
     public static void initExtentReport()
     {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String reportPath = System.getProperty("user.dir") + "/target/ExtentReports/ExtentReport_" + timestamp + ".html";
+        extentReportPath = System.getProperty("user.dir") + "/target/ExtentReports/ExtentReport_" + timestamp + ".html";
 
-        ExtentSparkReporter spark = new ExtentSparkReporter(reportPath);
+        ExtentSparkReporter spark = new ExtentSparkReporter(extentReportPath);
         extent = new ExtentReports();
         extent.attachReporter(spark);
 
@@ -50,7 +54,7 @@ public class BaseClass extends ExcelUtility
         if (extent == null) {
             initExtentReport();  // Ensure Extent Report is initialized
         }
-        
+
         loadProperties();
         loadExcelData();
         String browser = prop.getProperty("browser");
@@ -81,7 +85,7 @@ public class BaseClass extends ExcelUtility
         {
             initExtentReport(); // Ensure Extent Report is initialized
         }
-        
+
         loadProperties();
         loadExcelData();
         
@@ -104,7 +108,6 @@ public class BaseClass extends ExcelUtility
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.get(url);
     }
-
 
     // Load data from properties file
     public static void loadProperties()
@@ -139,14 +142,33 @@ public class BaseClass extends ExcelUtility
             .until(d -> ((TakesScreenshot) d).getScreenshotAs(OutputType.FILE) != null);
 
         File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String screenshotPath = System.getProperty("user.dir") + "/screenshots/" + "page _" + System.currentTimeMillis() + ".png";
+        String screenshotPath = System.getProperty("user.dir") + "/screenshots/" + "page_" + System.currentTimeMillis() + ".png";
         FileUtils.copyFile(src, new File(screenshotPath));
+        
+        attachScreenshotAllure(); // Attach to Allure Report
         return screenshotPath; // Return full path of screenshot
     }
 
+    // Attach Screenshot to Allure Report
+    @Attachment(value = "Screenshot", type = "image/png")
+    public static byte[] attachScreenshotAllure() 
+    {
+        try {
+            return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+        } 
+        catch (Exception e) 
+        {
+            return null;
+        }
+    }
 
+    // Log message to Allure Report
+    public static void logToAllure(String message)
+    {
+        Allure.step(message);
+    }
 
-    // Close Browser & Flush Extent Report
+    // Close Browser & Flush Reports
     public static void closeBrowser()
     {
         if (driver != null) 
@@ -155,7 +177,7 @@ public class BaseClass extends ExcelUtility
         }
     }
     
-    // It ensures that all logs and test execution details are written to the report.
+    // Flush Extent Report
     public static void flushExtentReport() 
     {
         if (extent != null) 
@@ -164,4 +186,33 @@ public class BaseClass extends ExcelUtility
         }
     }
 
+    // Generate Allure Report after test execution
+    @AfterSuite
+    public void generateAllureReport() 
+    {
+        flushExtentReport(); // Ensure Extent Reports are saved first
+        
+        try 
+        {
+            // Move Allure results to target/site/allure-maven-plugin/
+            File allureResults = new File(System.getProperty("user.dir") + "/allure-results");
+            File allureReportDir = new File(System.getProperty("user.dir") + "/target/site/allure-maven-plugin");
+            
+            if (!allureReportDir.exists()) {
+                allureReportDir.mkdirs();
+            }
+
+            FileUtils.copyDirectory(allureResults, allureReportDir);
+
+            // Generate Allure Report (ensure proper command execution)
+            ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "allure serve target/site/allure-maven-plugin");
+            pb.inheritIO();
+            Process process = pb.start();
+            process.waitFor(); // Wait for the process to complete before exiting
+        } 
+        catch (IOException | InterruptedException e) 
+        {
+            e.printStackTrace();
+        }
+    }
 }

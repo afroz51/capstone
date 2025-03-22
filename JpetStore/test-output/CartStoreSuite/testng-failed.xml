@@ -9,7 +9,7 @@
         <methods>
           <include name="setUp"/>
           <include name="close"/>
-          <include name="testAddMultipleProductsToCart_ExcelFile" invocation-numbers="0"/>
+          <include name="testAddMultipleProductsToCart_ExcelFile"/>
         </methods>
       </class> <!-- tests.CartTest -->
     </classes>

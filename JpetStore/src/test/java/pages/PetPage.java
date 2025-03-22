@@ -2,6 +2,7 @@ package pages;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.function.Function;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -9,6 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import base.BaseClass;
@@ -45,11 +47,21 @@ public class PetPage
         }
     }
 
-    // Select the first pet from search results (Clicks on pet name or image)
+    // Select the first pet from search results (Using FluentWait)
     public void selectPet()
     {
         try {
-            WebElement pet = wait.until(ExpectedConditions.elementToBeClickable(petLink));
+            FluentWait<WebDriver> fluentWait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(NoSuchElementException.class);
+
+            WebElement pet = fluentWait.until(new Function<WebDriver, WebElement>() {
+                public WebElement apply(WebDriver driver) {
+                    return driver.findElement(petLink);
+                }
+            });
+
             pet.click();
         } 
         catch (NoSuchElementException e)
@@ -58,11 +70,21 @@ public class PetPage
         }
     }
 
-    // Add selected pet to the cart
+    // Add selected pet to the cart (Using FluentWait)
     public void addToCart() 
     {
         try {
-            WebElement addToCart = wait.until(ExpectedConditions.elementToBeClickable(addToCartButton));
+            FluentWait<WebDriver> fluentWait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(NoSuchElementException.class);
+
+            WebElement addToCart = fluentWait.until(new Function<WebDriver, WebElement>() {
+                public WebElement apply(WebDriver driver) {
+                    return driver.findElement(addToCartButton);
+                }
+            });
+
             addToCart.click();
         }
         catch (NoSuchElementException e)
@@ -75,8 +97,20 @@ public class PetPage
     public boolean isPetAddedToCart() throws IOException 
     {
         try {
-        	BaseClass.screenshot();
-            return wait.until(ExpectedConditions.presenceOfElementLocated(cartItem)).isDisplayed();
+            BaseClass.screenshot();
+
+            FluentWait<WebDriver> fluentWait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(NoSuchElementException.class);
+
+            WebElement cartItemElement = fluentWait.until(new Function<WebDriver, WebElement>() {
+                public WebElement apply(WebDriver driver) {
+                    return driver.findElement(cartItem);
+                }
+            });
+
+            return cartItemElement.isDisplayed();
         } 
         catch (NoSuchElementException e) 
         {

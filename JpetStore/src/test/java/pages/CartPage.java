@@ -1,14 +1,15 @@
 package pages;
 
 import java.time.Duration;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.util.function.Function;
 
 public class CartPage
 {
@@ -35,25 +36,41 @@ public class CartPage
     }
 
     // Search for a product
-    public void searchProduct(String productName)
+    public void searchProduct(String[] searchItems, int index) 
     {
         try {
+            if (index < 0 || index >= searchItems.length) {
+                throw new IllegalArgumentException("Invalid index for search items array.");
+            }
+
+            String productName = searchItems[index].trim(); // Get product by index
+
             WebElement searchField = wait.until(ExpectedConditions.visibilityOfElementLocated(searchBox));
             searchField.clear();
             searchField.sendKeys(productName);
             driver.findElement(searchButton).click();
         } 
-        catch (NoSuchElementException e)
+        catch (NoSuchElementException e) 
         {
             System.out.println("Search box or button not found: " + e.getMessage());
         }
     }
 
-    // Select the product link from search results
+    // Select the product link from search results (Using FluentWait)
     public void selectProduct() 
     {
         try {
-            WebElement product = wait.until(ExpectedConditions.elementToBeClickable(petLink));
+            FluentWait<WebDriver> fluentWait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(NoSuchElementException.class);
+
+            WebElement product = fluentWait.until(new Function<WebDriver, WebElement>() {
+                public WebElement apply(WebDriver driver) {
+                    return driver.findElement(petLink);
+                }
+            });
+
             product.click();
         } 
         catch (NoSuchElementException e) 
@@ -62,11 +79,21 @@ public class CartPage
         }
     }
 
-    // Add product to the cart
+    // Add product to the cart (Using FluentWait)
     public void addProductToCart()
     {
         try {
-            WebElement addToCart = wait.until(ExpectedConditions.elementToBeClickable(addToCartButton));
+            FluentWait<WebDriver> fluentWait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(NoSuchElementException.class);
+
+            WebElement addToCart = fluentWait.until(new Function<WebDriver, WebElement>() {
+                public WebElement apply(WebDriver driver) {
+                    return driver.findElement(addToCartButton);
+                }
+            });
+
             addToCart.click();
         }
         catch (NoSuchElementException e)
@@ -75,7 +102,7 @@ public class CartPage
         }
     }
 
-    // Verify if product was successfully added to the cart (checking based on the product's link)
+    // Verify if product was successfully added to the cart (Checking based on the product's link)
     public boolean isProductAddedToCart(String productNumber) 
     {
         try {
