@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" > 
 <suite name="CartStoreSuite" parallel="tests" thread-count="2">
-    <test name="Edge_Test">
-        <parameter name="browser" value="edge"/>
+    <test name="Chrome_Test">
+        <parameter name="browser" value="chrome"/>
         <parameter name="url" value="https://petstore.octoperf.com/actions/Catalog.action"/>
         <classes>
             <class name="tests.CartTest"/>

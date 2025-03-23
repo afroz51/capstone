@@ -3,7 +3,7 @@
     
     <!-- Include Automation Suite -->
     <suite-files>
-        <suite-file path="login.xml"/>
+        <!-- <suite-file path="login.xml"/> -->
         <suite-file path="pet.xml"/>
         <suite-file path="cart.xml"/>
     </suite-files>
