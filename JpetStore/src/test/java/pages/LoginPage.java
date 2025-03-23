@@ -3,10 +3,11 @@ package pages;
 import java.io.IOException;
 import java.time.Duration;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,27 +15,45 @@ import base.BaseClass;
 
 public class LoginPage extends BaseClass 
 {
-    WebDriver driver;
-    WebDriverWait wait;
+    private WebDriver driver;
+    private WebDriverWait wait;
 
+    // **Constructor**
     public LoginPage(WebDriver driver) 
     {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        PageFactory.initElements(driver, this);
     }
 
-    // Locators
-    By signin = By.linkText("Sign In");
-    By username = By.name("username");
-    By password = By.name("password");
-    By loginBtn = By.name("signon");
-    By errorMsg = By.xpath("//ul[@class='messages']/li");
+    // **Locators as Private WebElements**
+    @FindBy(linkText = "Sign In")
+    private WebElement signin;
 
-    // Method to Open Login Page
+    @FindBy(name = "username")
+    private WebElement username;
+
+    @FindBy(name = "password")
+    private WebElement password;
+
+    @FindBy(name = "signon")
+    private WebElement loginBtn;
+
+    @FindBy(xpath = "//ul[@class='messages']/li")
+    private WebElement errorMsg;
+
+    // **Getter Methods for WebElements**
+    private WebElement getSignIn() { return wait.until(ExpectedConditions.elementToBeClickable(signin)); }
+    private WebElement getUsername() { return wait.until(ExpectedConditions.visibilityOf(username)); }
+    private WebElement getPassword() { return wait.until(ExpectedConditions.visibilityOf(password)); }
+    private WebElement getLoginButton() { return wait.until(ExpectedConditions.elementToBeClickable(loginBtn)); }
+    private WebElement getErrorMessage() { return wait.until(ExpectedConditions.visibilityOf(errorMsg)); }
+
+    // **Method to Open Login Page**
     public void openLoginPage()
     {
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(signin)).click();
+            getSignIn().click();
             test.pass("Opened Login Page");
         } 
         catch (NoSuchElementException e) 
@@ -43,14 +62,13 @@ public class LoginPage extends BaseClass
         }
     }
 
-    // Method to Perform Login
+    // **Method to Perform Login**
     public void login(String user, String pass) 
     {
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(username)).sendKeys(user);
-            WebElement passField = wait.until(ExpectedConditions.visibilityOfElementLocated(password));
-            passField.clear();
-            passField.sendKeys(pass);
+            getUsername().sendKeys(user);
+            getPassword().clear();
+            getPassword().sendKeys(pass);
             test.pass("Entered credentials: " + user);
         } 
         catch (NoSuchElementException e) 
@@ -59,12 +77,12 @@ public class LoginPage extends BaseClass
         }
     }
 
-    // Method to Click Login Button
+    // **Method to Click Login Button**
     public void submit() 
     {
         try 
         {
-            wait.until(ExpectedConditions.elementToBeClickable(loginBtn)).click();
+            getLoginButton().click();
             test.pass("Clicked on Login button");
             captureScreenshot("LoginAttempt");
         } 
@@ -74,12 +92,12 @@ public class LoginPage extends BaseClass
         }
     }
 
-    // Method to Check Error Message
+    // **Method to Check Error Message**
     public boolean isErrorMessageDisplayed()
     {
         try 
         {
-            boolean isDisplayed = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMsg)).isDisplayed();
+            boolean isDisplayed = getErrorMessage().isDisplayed();
             test.pass("Error message displayed");
             return isDisplayed;
         } 
@@ -90,7 +108,7 @@ public class LoginPage extends BaseClass
         }
     }
 
-    // Method to Verify Login Success
+    // **Method to Verify Login Success**
     public boolean isLoginSuccessful()
     {
         boolean status = driver.getCurrentUrl().equals("https://petstore.octoperf.com/actions/Catalog.action");
@@ -105,7 +123,7 @@ public class LoginPage extends BaseClass
         return status;
     }
 
-    // Method to Capture Screenshot
+    // **Method to Capture Screenshot**
     public void captureScreenshot(String testName)
     {
         try {

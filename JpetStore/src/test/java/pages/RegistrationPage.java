@@ -1,12 +1,17 @@
 package pages;
 
-import base.BaseClass;
-import org.openqa.selenium.*;
+import java.io.IOException;
+import java.time.Duration;
+
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.IOException;
-import java.time.Duration;
+import base.BaseClass;
 
 public class RegistrationPage extends BaseClass 
 {
@@ -16,43 +21,85 @@ public class RegistrationPage extends BaseClass
     public RegistrationPage(WebDriver driver) 
     {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10)); 
+        PageFactory.initElements(driver, this);  // Initialize Page Factory
     }
 
-    // Locators
-    By signin = By.linkText("Sign In");
-    By registerBtn = By.linkText("Register Now!");
-    By submitBtn = By.name("newAccount");
-    By errorMsg = By.xpath("//h1"); 
+    // Locators using @FindBy annotation
+    @FindBy(linkText = "Sign In") 
+    private WebElement signin;
+    
+    @FindBy(linkText = "Register Now!") 
+    private WebElement registerBtn;
+    
+    @FindBy(name = "newAccount") 
+    private WebElement submitBtn;
+    
+    @FindBy(xpath = "//h1") 
+    private WebElement errorMsg;
 
     // User details locators
-    By userid = By.name("username");
-    By newpassword = By.name("password");
-    By repeatpassword = By.name("repeatedPassword");
-    By firstname = By.name("account.firstName");
-    By lastname = By.name("account.lastName");
-    By email = By.name("account.email");
-    By phone = By.name("account.phone");
-    By address1 = By.name("account.address1");
-    By address2 = By.name("account.address2");
-    By city = By.name("account.city");
-    By state = By.name("account.state");
-    By zip = By.name("account.zip");
-    By country = By.name("account.country");
-    By language = By.name("account.languagePreference");
-    By favoriteCategory = By.name("account.favouriteCategoryId");
-    By enableMyList = By.name("account.listOption");
-    By enableMyBanner = By.name("account.bannerOption");
+    @FindBy(name = "username") 
+    private WebElement userid;
+    
+    @FindBy(name = "password") 
+    private WebElement newpassword;
+    
+    @FindBy(name = "repeatedPassword") 
+    private WebElement repeatpassword;
+    
+    @FindBy(name = "account.firstName") 
+    private WebElement firstname;
+    
+    @FindBy(name = "account.lastName") 
+    private WebElement lastname;
+    
+    @FindBy(name = "account.email") 
+    private WebElement email;
+    
+    @FindBy(name = "account.phone") 
+    private WebElement phone;
+    
+    @FindBy(name = "account.address1") 
+    private WebElement address1;
+    
+    @FindBy(name = "account.address2") 
+    private WebElement address2;
+    
+    @FindBy(name = "account.city") 
+    private WebElement city;
+    
+    @FindBy(name = "account.state") 
+    private WebElement state;
+    
+    @FindBy(name = "account.zip") 
+    private WebElement zip;
+    
+    @FindBy(name = "account.country") 
+    private WebElement country;
+    
+    @FindBy(name = "account.languagePreference") 
+    private WebElement language;
+    
+    @FindBy(name = "account.favouriteCategoryId") 
+    private WebElement favoriteCategory;
+    
+    @FindBy(name = "account.listOption") 
+    private WebElement enableMyList;
+    
+    @FindBy(name = "account.bannerOption") 
+    private WebElement enableMyBanner;
 
     // Method to Open Registration Page
     public void openRegistrationPage() 
     {
-        try {
+        try 
+        {
             wait.until(ExpectedConditions.elementToBeClickable(signin)).click();
             wait.until(ExpectedConditions.elementToBeClickable(registerBtn)).click();
             test.pass("Navigated to Registration Page");
         } 
-        catch (NoSuchElementException e)
+        catch (TimeoutException e) 
         {
             test.fail("Error opening Registration Page: " + e.getMessage());
         }
@@ -63,34 +110,35 @@ public class RegistrationPage extends BaseClass
                                      String add1, String add2, String ci, String st, String zp, String co,
                                      String lang, String favCat, boolean listOption, boolean bannerOption) 
     {
-        try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(userid)).sendKeys(id);
-            driver.findElement(newpassword).sendKeys(np);
-            driver.findElement(repeatpassword).sendKeys(rp);
-            driver.findElement(firstname).sendKeys(fn);
-            driver.findElement(lastname).sendKeys(ln);
-            driver.findElement(email).sendKeys(em);
-            driver.findElement(phone).sendKeys(ph);
-            driver.findElement(address1).sendKeys(add1);
-            driver.findElement(address2).sendKeys(add2);
-            driver.findElement(city).sendKeys(ci);
-            driver.findElement(state).sendKeys(st);
-            driver.findElement(zip).sendKeys(zp);
-            driver.findElement(country).sendKeys(co);
-            driver.findElement(language).sendKeys(lang);
-            driver.findElement(favoriteCategory).sendKeys(favCat);
+        try 
+        {
+            wait.until(ExpectedConditions.visibilityOf(userid)).sendKeys(id);
+            newpassword.sendKeys(np);
+            repeatpassword.sendKeys(rp);
+            firstname.sendKeys(fn);
+            lastname.sendKeys(ln);
+            email.sendKeys(em);
+            phone.sendKeys(ph);
+            address1.sendKeys(add1);
+            address2.sendKeys(add2);
+            city.sendKeys(ci);
+            state.sendKeys(st);
+            zip.sendKeys(zp);
+            country.sendKeys(co);
+            language.sendKeys(lang);
+            favoriteCategory.sendKeys(favCat);
 
             if (listOption) 
             {
-                driver.findElement(enableMyList).click();
+                enableMyList.click();
             }
             if (bannerOption) 
             {
-                driver.findElement(enableMyBanner).click();
+                enableMyBanner.click();
             }
             test.pass("Filled Registration Form successfully");
         } 
-        catch (NoSuchElementException e) 
+        catch (TimeoutException e) 
         {
             test.fail("Error filling Registration Form: " + e.getMessage());
         }
@@ -99,12 +147,13 @@ public class RegistrationPage extends BaseClass
     // Method to Submit Registration Form
     public void submitForm() 
     {
-        try {
+        try 
+        {
             wait.until(ExpectedConditions.elementToBeClickable(submitBtn)).click();
             captureScreenshot("RegistrationAttempt");
             test.pass("Submitted Registration Form");
         } 
-        catch (NoSuchElementException e)
+        catch (TimeoutException e) 
         {
             test.fail("Error submitting form: " + e.getMessage());
         }
@@ -113,12 +162,13 @@ public class RegistrationPage extends BaseClass
     // Method to Check Error Message
     public boolean isErrorMessageDisplayed()
     {
-        try {
-            boolean isDisplayed = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMsg)).isDisplayed();
+        try 
+        {
+            boolean isDisplayed = wait.until(ExpectedConditions.visibilityOf(errorMsg)).isDisplayed();
             test.pass("Error message displayed");
             return isDisplayed;
         } 
-        catch (NoSuchElementException e)
+        catch (TimeoutException e) 
         {
             test.fail("No error message displayed: " + e.getMessage());
             return false;
@@ -128,7 +178,7 @@ public class RegistrationPage extends BaseClass
     // Method to Verify Registration Success
     public boolean isRegistrationSuccessful() 
     {
-    	boolean status = driver.findElement(signin).isDisplayed();
+        boolean status = signin.isDisplayed();
         if (status) 
         {
             test.pass("Registration successful, redirected to homepage");
@@ -143,10 +193,11 @@ public class RegistrationPage extends BaseClass
     // Method to Capture Screenshot
     public void captureScreenshot(String testName) 
     {
-        try {
+        try 
+        {
             String screenshotPath = screenshot();
             test.addScreenCaptureFromPath(screenshotPath);
-        }
+        } 
         catch (IOException e) 
         {
             test.fail("Failed to capture screenshot: " + e.getMessage());

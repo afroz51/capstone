@@ -1,95 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="4" passed="4" failed="0" skipped="0">
+<testng-results ignored="1" total="2" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-03-23T01:13:36 IST" name="Automation Suite" finished-at="2025-03-23T01:14:05 IST" duration-ms="28430">
+  <suite started-at="2025-03-24T01:44:35 IST" name="PetStoreSuite" finished-at="2025-03-24T01:44:45 IST" duration-ms="9946">
     <groups>
-      <group name="cucumber">
-        <method signature="AbstractTestNGCucumberTests.runScenario(io.cucumber.testng.PickleWrapper,io.cucumber.testng.FeatureWrapper)[pri:0, instance:runner.LoginRunner@766653e6]" name="runScenario" class="io.cucumber.testng.AbstractTestNGCucumberTests"/>
-      </group> <!-- cucumber -->
     </groups>
-    <test started-at="2025-03-23T01:13:36 IST" name="Cucumber Tests" finished-at="2025-03-23T01:14:05 IST" duration-ms="28430">
-      <class name="runner.LoginRunner">
-        <test-method is-config="true" signature="setUpClass(org.testng.ITestContext)[pri:0, instance:runner.LoginRunner@766653e6]" started-at="2025-03-23T01:13:36 IST" name="setUpClass" finished-at="2025-03-23T01:13:37 IST" duration-ms="800" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[org.testng.TestRunner@82ea68c]]>
-              </value>
-            </param>
-          </params>
+    <test started-at="2025-03-24T01:44:35 IST" name="Chrome_Test" finished-at="2025-03-24T01:44:45 IST" duration-ms="9946">
+      <class name="tests.PetTest">
+        <test-method is-config="true" signature="clearAllureResults()[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:35 IST" name="clearAllureResults" finished-at="2025-03-24T01:44:35 IST" duration-ms="39" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- setUpClass -->
-        <test-method signature="runScenario(io.cucumber.testng.PickleWrapper,io.cucumber.testng.FeatureWrapper)[pri:0, instance:runner.LoginRunner@766653e6]" started-at="2025-03-23T01:13:37 IST" name="runScenario" description="Runs Cucumber Scenarios" data-provider="scenarios" finished-at="2025-03-23T01:13:48 IST" duration-ms="10555" status="PASS">
+        </test-method> <!-- clearAllureResults -->
+        <test-method is-config="true" signature="setUp(java.lang.String,java.lang.String)[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:37 IST" name="setUp" finished-at="2025-03-24T01:44:42 IST" duration-ms="4599" status="PASS">
           <params>
             <param index="0">
               <value>
-                <![CDATA["Login with invalid data table details"]]>
+                <![CDATA[chrome]]>
               </value>
             </param>
             <param index="1">
               <value>
-                <![CDATA["User Login"]]>
+                <![CDATA[https://petstore.octoperf.com/actions/Catalog.action]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- runScenario -->
-        <test-method signature="runScenario(io.cucumber.testng.PickleWrapper,io.cucumber.testng.FeatureWrapper)[pri:0, instance:runner.LoginRunner@766653e6]" started-at="2025-03-23T01:13:48 IST" name="runScenario" description="Runs Cucumber Scenarios" data-provider="scenarios" finished-at="2025-03-23T01:13:54 IST" duration-ms="5875" status="PASS">
+        </test-method> <!-- setUp -->
+        <test-method signature="testSearchAndAddToCart_ExcelFile(java.lang.String)[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:42 IST" name="testSearchAndAddToCart_ExcelFile" data-provider="petDataFromExcel" finished-at="2025-03-24T01:44:45 IST" duration-ms="2429" status="PASS">
           <params>
             <param index="0">
               <value>
-                <![CDATA["Login with valid data table details"]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA["User Login"]]>
+                <![CDATA[dog]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- runScenario -->
-        <test-method signature="runScenario(io.cucumber.testng.PickleWrapper,io.cucumber.testng.FeatureWrapper)[pri:0, instance:runner.LoginRunner@766653e6]" started-at="2025-03-23T01:13:54 IST" name="runScenario" description="Runs Cucumber Scenarios" data-provider="scenarios" finished-at="2025-03-23T01:14:00 IST" duration-ms="6367" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA["Login with invalid excel details"]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA["User Login"]]>
-              </value>
-            </param>
-          </params>
+        </test-method> <!-- testSearchAndAddToCart_ExcelFile -->
+        <test-method is-config="true" signature="close()[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:45 IST" name="close" finished-at="2025-03-24T01:44:45 IST" duration-ms="874" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- runScenario -->
-        <test-method signature="runScenario(io.cucumber.testng.PickleWrapper,io.cucumber.testng.FeatureWrapper)[pri:0, instance:runner.LoginRunner@766653e6]" started-at="2025-03-23T01:14:00 IST" name="runScenario" description="Runs Cucumber Scenarios" data-provider="scenarios" finished-at="2025-03-23T01:14:05 IST" duration-ms="4553" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA["Login with valid properties details"]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA["User Login"]]>
-              </value>
-            </param>
-          </params>
+        </test-method> <!-- close -->
+        <test-method is-config="true" signature="generateAllureReport()[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:45 IST" name="generateAllureReport" finished-at="2025-03-24T01:44:53 IST" duration-ms="7501" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- runScenario -->
-        <test-method is-config="true" signature="tearDownClass()[pri:0, instance:runner.LoginRunner@766653e6]" started-at="2025-03-23T01:14:05 IST" name="tearDownClass" finished-at="2025-03-23T01:14:05 IST" duration-ms="62" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- tearDownClass -->
-      </class> <!-- runner.LoginRunner -->
-    </test> <!-- Cucumber Tests -->
-  </suite> <!-- Automation Suite -->
+        </test-method> <!-- generateAllureReport -->
+      </class> <!-- tests.PetTest -->
+    </test> <!-- Chrome_Test -->
+  </suite> <!-- PetStoreSuite -->
 </testng-results>
