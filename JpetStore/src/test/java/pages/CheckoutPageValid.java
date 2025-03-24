@@ -49,8 +49,18 @@ public class CheckoutPageValid {
     @FindBy(name = "order.cardType") private WebElement cardTypeDropdown;
     @FindBy(name = "order.creditCard") private WebElement cardNumberField;
     @FindBy(name = "order.expiryDate") private WebElement expiryDateField;
-
-    @FindBy(xpath = "//input[@name='newOrder']") private WebElement submitOrderButton;
+    @FindBy(xpath = "//input[@name='shippingAddressRequired']") private WebElement shipaddr;
+    @FindBy(xpath = "//input[@name='newOrder']") private WebElement continuebutton;
+    @FindBy(xpath = "//input[@name='order.shipToFirstName']") private WebElement shipfirstname;
+    @FindBy(xpath = "//input[@name='order.shipToLastName']") private WebElement shiplastname;
+    @FindBy(xpath = "//input[@name='order.shipAddress1']") private WebElement shipaddr1;
+    @FindBy(xpath = "//input[@name='order.shipAddress2']") private WebElement shipaddr2;
+    @FindBy(xpath = "//input[@name='order.shipCity']") private WebElement shipcity;
+    @FindBy(xpath = "//input[@name='order.shipState']") private WebElement shipstate;
+    @FindBy(xpath = "//input[@name='order.shipZip']") private WebElement shipzip;
+    @FindBy(xpath = "//input[@name='order.shipCountry']") private WebElement shipcountry;
+    
+    @FindBy(xpath = "//input[@name='newOrder']") private WebElement submitorder;
     @FindBy(xpath = "//div[@id='Catalog']/a[@class='Button']") private WebElement confirmorderbutton;
 
     @FindBy(xpath = "//ul[@class='messages']/li") private WebElement success; // Updated element
@@ -99,7 +109,8 @@ public class CheckoutPageValid {
     @Step("Filling checkout details")
     public void fillCheckoutDetails(String firstName, String lastName, String address1, String address2,
                                     String city, String state, String zipCode, String country,
-                                    String cardType, String cardNumber, String expiryDate) throws IOException, InterruptedException {
+                                    String cardType, String cardNumber, String expiryDate
+                                    ) throws IOException, InterruptedException {
         try {
             cardTypeDropdown.sendKeys(cardType);
             cardNumberField.sendKeys(cardNumber);
@@ -112,10 +123,19 @@ public class CheckoutPageValid {
             clearAndSendKeys(billState, state);
             clearAndSendKeys(billZip, zipCode);
             clearAndSendKeys(billCountry, country);
-
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-            Thread.sleep(3000);
-
+            
+            shipaddr.click();
+            wait.until(ExpectedConditions.elementToBeClickable(continuebutton)).click();
+            
+            clearAndSendKeys(shipfirstname, firstName);
+            clearAndSendKeys(shiplastname, lastName);
+            clearAndSendKeys(shipaddr1, address1);
+            clearAndSendKeys(shipaddr1, address2);
+            clearAndSendKeys(shipcity, city);
+            clearAndSendKeys(shipstate, state);
+            clearAndSendKeys(shipzip, zipCode);
+            clearAndSendKeys(shipcountry, country);
+            
             Allure.step("Checkout form filled with invalid data.");
         } catch (NoSuchElementException e) {
             handleException("Checkout form elements not found!", e);
@@ -126,7 +146,7 @@ public class CheckoutPageValid {
     @Step("Completing checkout process")
     public void completeCheckout() throws IOException {
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(submitOrderButton)).click();
+        	wait.until(ExpectedConditions.elementToBeClickable(submitorder)).click();
             wait.until(ExpectedConditions.elementToBeClickable(confirmorderbutton)).click();
             Allure.step("Clicked 'Submit Order'.");
         } catch (NoSuchElementException e) {

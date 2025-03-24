@@ -49,8 +49,18 @@ public class CheckoutPageInvalid {
     @FindBy(name = "order.cardType") private WebElement cardTypeDropdown;
     @FindBy(name = "order.creditCard") private WebElement cardNumberField;
     @FindBy(name = "order.expiryDate") private WebElement expiryDateField;
-
-    @FindBy(xpath = "//input[@name='newOrder']") private WebElement submitOrderButton;
+    @FindBy(xpath = "//input[@name='shippingAddressRequired']") private WebElement shipaddr;
+    @FindBy(xpath = "//input[@name='newOrder']") private WebElement continuebutton;
+    @FindBy(xpath = "//input[@name='order.shipToFirstName']") private WebElement shipfirstname;
+    @FindBy(xpath = "//input[@name='order.shipToLastName']") private WebElement shiplastname;
+    @FindBy(xpath = "//input[@name='order.shipAddress1']") private WebElement shipaddr1;
+    @FindBy(xpath = "//input[@name='order.shipAddress2']") private WebElement shipaddr2;
+    @FindBy(xpath = "//input[@name='order.shipCity']") private WebElement shipcity;
+    @FindBy(xpath = "//input[@name='order.shipState']") private WebElement shipstate;
+    @FindBy(xpath = "//input[@name='order.shipZip']") private WebElement shipzip;
+    @FindBy(xpath = "//input[@name='order.shipCountry']") private WebElement shipcountry;
+    
+    @FindBy(xpath = "//input[@name='newOrder']") private WebElement submitorder;
     @FindBy(xpath = "//div[@id='Catalog']/a[@class='Button']") private WebElement confirmorderbutton;
 
     @FindBy(xpath = "//h1") private WebElement errorMessage;
@@ -114,10 +124,17 @@ public class CheckoutPageInvalid {
             clearAndSendKeys(billZip, zipCode);
             clearAndSendKeys(billCountry, country);
             
+            shipaddr.click();
+            wait.until(ExpectedConditions.elementToBeClickable(continuebutton)).click();
             
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
-            Thread.sleep(3000);
+            clearAndSendKeys(shipfirstname, firstName);
+            clearAndSendKeys(shiplastname, lastName);
+            clearAndSendKeys(shipaddr1, address1);
+            clearAndSendKeys(shipaddr1, address2);
+            clearAndSendKeys(shipcity, city);
+            clearAndSendKeys(shipstate, state);
+            clearAndSendKeys(shipzip, zipCode);
+            clearAndSendKeys(shipcountry, country);
             
             Allure.step("Checkout form filled with invalid data.");
         } catch (NoSuchElementException e) {
@@ -129,7 +146,7 @@ public class CheckoutPageInvalid {
     @Step("Completing checkout process")
     public void completeCheckout() throws IOException {
         try {
-        	wait.until(ExpectedConditions.elementToBeClickable(submitOrderButton)).click();
+        	wait.until(ExpectedConditions.elementToBeClickable(submitorder)).click();
         	wait.until(ExpectedConditions.elementToBeClickable(confirmorderbutton)).click();
             Allure.step("Clicked 'Submit Order'.");
         } catch (NoSuchElementException e) {

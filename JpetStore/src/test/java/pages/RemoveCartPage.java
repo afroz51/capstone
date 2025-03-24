@@ -38,7 +38,7 @@ public class RemoveCartPage extends BaseClass {
     @FindBy(xpath = "//a[contains(text(),'Remove')]")
     private List<WebElement> removeButtons;
 
-    @FindBy(xpath = "//b[contains(text(),'Your cart is empty.')]")
+    @FindBy(xpath = "//form[@method='post']/table/tbody/tr/td/b[contains(text(),'Your cart is empty.')]")
     private WebElement emptyCartMessage;
 
     public RemoveCartPage(WebDriver driver) {
