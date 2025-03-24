@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="1" total="2" passed="1" failed="0" skipped="0">
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-03-24T01:44:35 IST" name="PetStoreSuite" finished-at="2025-03-24T01:44:45 IST" duration-ms="9946">
+  <suite started-at="2025-03-24T13:00:34 IST" name="CartStoreSuite" finished-at="2025-03-24T13:01:05 IST" duration-ms="30992">
     <groups>
     </groups>
-    <test started-at="2025-03-24T01:44:35 IST" name="Chrome_Test" finished-at="2025-03-24T01:44:45 IST" duration-ms="9946">
-      <class name="tests.PetTest">
-        <test-method is-config="true" signature="clearAllureResults()[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:35 IST" name="clearAllureResults" finished-at="2025-03-24T01:44:35 IST" duration-ms="39" status="PASS">
+    <test started-at="2025-03-24T13:00:34 IST" name="Chrome_Test" finished-at="2025-03-24T13:01:05 IST" duration-ms="30992">
+      <class name="tests.RemoveCartTest">
+        <test-method is-config="true" signature="clearAllureResults()[pri:0, instance:tests.RemoveCartTest@a37aefe]" started-at="2025-03-24T13:00:34 IST" name="clearAllureResults" finished-at="2025-03-24T13:00:34 IST" duration-ms="52" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- clearAllureResults -->
-        <test-method is-config="true" signature="setUp(java.lang.String,java.lang.String)[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:37 IST" name="setUp" finished-at="2025-03-24T01:44:42 IST" duration-ms="4599" status="PASS">
+        <test-method is-config="true" signature="setUp(java.lang.String,java.lang.String)[pri:0, instance:tests.RemoveCartTest@a37aefe]" started-at="2025-03-24T13:00:34 IST" name="setUp" finished-at="2025-03-24T13:00:42 IST" duration-ms="8431" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -27,26 +27,19 @@
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method signature="testSearchAndAddToCart_ExcelFile(java.lang.String)[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:42 IST" name="testSearchAndAddToCart_ExcelFile" data-provider="petDataFromExcel" finished-at="2025-03-24T01:44:45 IST" duration-ms="2429" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[dog]]>
-              </value>
-            </param>
-          </params>
+        <test-method signature="testRemoveProducts()[pri:0, instance:tests.RemoveCartTest@a37aefe]" started-at="2025-03-24T13:00:42 IST" name="testRemoveProducts" finished-at="2025-03-24T13:01:03 IST" duration-ms="20697" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testSearchAndAddToCart_ExcelFile -->
-        <test-method is-config="true" signature="close()[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:45 IST" name="close" finished-at="2025-03-24T01:44:45 IST" duration-ms="874" status="PASS">
+        </test-method> <!-- testRemoveProducts -->
+        <test-method is-config="true" signature="close()[pri:0, instance:tests.RemoveCartTest@a37aefe]" started-at="2025-03-24T13:01:03 IST" name="close" finished-at="2025-03-24T13:01:05 IST" duration-ms="1494" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- close -->
-        <test-method is-config="true" signature="generateAllureReport()[pri:0, instance:tests.PetTest@42a15bdc]" started-at="2025-03-24T01:44:45 IST" name="generateAllureReport" finished-at="2025-03-24T01:44:53 IST" duration-ms="7501" status="PASS">
+        <test-method is-config="true" signature="generateAllureReport()[pri:0, instance:tests.RemoveCartTest@a37aefe]" started-at="2025-03-24T13:01:05 IST" name="generateAllureReport" finished-at="2025-03-24T13:01:20 IST" duration-ms="15471" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- generateAllureReport -->
-      </class> <!-- tests.PetTest -->
+      </class> <!-- tests.RemoveCartTest -->
     </test> <!-- Chrome_Test -->
-  </suite> <!-- PetStoreSuite -->
+  </suite> <!-- CartStoreSuite -->
 </testng-results>
